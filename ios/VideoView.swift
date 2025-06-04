@@ -5,7 +5,7 @@ import ExpoModulesCore
 
 public final class VideoView: ExpoView, AVPlayerViewControllerDelegate {
   lazy var playerViewController = AVPlayerViewController()
-
+  private var watermarkLabel: UILabel?
   weak var player: VideoPlayer? {
     didSet {
       playerViewController.player = player?.ref
@@ -49,6 +49,13 @@ public final class VideoView: ExpoView, AVPlayerViewControllerDelegate {
     }
   }
 
+  @objc
+  public var watermarkText: String? {
+    didSet {
+      updateWatermark()
+    }
+  }
+
   public required init(appContext: AppContext? = nil) {
     super.init(appContext: appContext)
 
@@ -65,7 +72,43 @@ public final class VideoView: ExpoView, AVPlayerViewControllerDelegate {
 
     addFirstFrameObserver()
     addSubview(playerViewController.view)
+    setupWatermarkLabel()
   }
+
+  private func setupWatermarkLabel() {
+    let label = UILabel()
+    label.textColor = .white
+    label.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+    label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+    label.numberOfLines = 1
+    label.textAlignment = .center
+    label.layer.cornerRadius = 6
+    label.layer.masksToBounds = true
+    label.translatesAutoresizingMaskIntoConstraints = false
+    addSubview(label)
+    watermarkLabel = label
+    
+    // Constraints: Top-right corner, margin 8px
+    NSLayoutConstraint.activate([
+      label.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
+      label.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -8),
+      label.heightAnchor.constraint(greaterThanOrEqualToConstant: 24)
+    ])
+    label.isHidden = true
+  }
+
+  private func updateWatermark() {
+    if let text = watermarkText, !text.isEmpty {
+      watermarkLabel?.text = text
+      watermarkLabel?.isHidden = false
+      watermarkLabel?.sizeToFit()
+      watermarkLabel?.frame.size.width += 16 // padding
+      watermarkLabel?.frame.size.height += 8
+    } else {
+      watermarkLabel?.isHidden = true
+    }
+  }
+
 
   deinit {
     VideoManager.shared.unregister(videoView: self)

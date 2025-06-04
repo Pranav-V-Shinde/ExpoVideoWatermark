@@ -66,6 +66,7 @@ open class VideoView(context: Context, appContext: AppContext, useTextureView: B
   private val rootViewChildrenOriginalVisibility: ArrayList<Int> = arrayListOf()
   private var pictureInPictureHelperTag: String? = null
   private var reactNativeEventDispatcher: EventDispatcher? = null
+  private var watermarkTextView: TextView? = null
 
   // We need to keep track of the target surface view visibility, but only apply it when `useExoShutter` is false.
   var shouldHideSurfaceView: Boolean = true
@@ -84,6 +85,12 @@ open class VideoView(context: Context, appContext: AppContext, useTextureView: B
   var autoEnterPiP: Boolean by IgnoreSameSet(false) { new, _ ->
     applyAutoEnterPiP(currentActivity, new)
   }
+  
+  var watermarkText: String? = null
+    set(value) {
+      field = value
+      updateWatermark()
+    }
 
   var contentFit: ContentFit = ContentFit.CONTAIN
     set(value) {
@@ -153,7 +160,45 @@ open class VideoView(context: Context, appContext: AppContext, useTextureView: B
     )
 
     reactNativeEventDispatcher = UIManagerHelper.getEventDispatcher(appContext.reactContext as ReactContext, id)
+    setupWatermark()
   }
+  
+  private fun setupWatermark() {
+    val textView = TextView(context)
+    textView.setTextColor(Color.WHITE)
+    textView.setBackgroundColor(Color.parseColor("#66000000")) // semi-transparent black
+    textView.textSize = 14f
+    textView.setPadding(12, 4, 12, 4)
+    textView.gravity = Gravity.CENTER
+    textView.visibility = View.GONE
+
+    val params = FrameLayout.LayoutParams(
+      FrameLayout.LayoutParams.WRAP_CONTENT,
+      FrameLayout.LayoutParams.WRAP_CONTENT,
+      Gravity.TOP or Gravity.END
+    )
+    params.setMargins(0, 16, 16, 0)
+
+    if (this is FrameLayout) {
+      this.addView(textView, params)
+    } else {
+      // fallback if not FrameLayout (should typically be)
+      (this as ViewGroup).addView(textView, params)
+    }
+    watermarkTextView = textView
+  }
+
+  private fun updateWatermark() {
+    watermarkTextView?.let { tv ->
+      if (!watermarkText.isNullOrEmpty()) {
+        tv.text = watermarkText
+        tv.visibility = View.VISIBLE
+      } else {
+        tv.visibility = View.GONE
+      }
+    }
+  }
+
 
   fun applySurfaceViewVisibility() {
     if (useExoShutter != true && shouldHideSurfaceView) {

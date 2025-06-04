@@ -180,6 +180,7 @@ export const VideoView = forwardRef((props: { player?: VideoPlayer } & VideoView
   }, [props.player]);
 
   return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
     <video
       controls={props.nativeControls ?? true}
       controlsList={props.allowsFullscreen ? undefined : 'nofullscreen'}
@@ -208,6 +209,25 @@ export const VideoView = forwardRef((props: { player?: VideoPlayer } & VideoView
       playsInline={props.playsInline}
       src={getSourceUri(props.player?.src) ?? ''}
     />
+    {props.watermarkText && (
+      <div style={{
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        opacity: 0.7,
+        background: 'rgba(0,0,0,0.4)',
+        color: 'white',
+        padding: '4px 8px',
+        borderRadius: 4,
+        pointerEvents: 'none',
+        zIndex: 10,
+        fontSize: 14,
+      }}>
+        {props.watermarkText}
+      </div>
+    </div>
+    
+    )}
   );
 });
 
