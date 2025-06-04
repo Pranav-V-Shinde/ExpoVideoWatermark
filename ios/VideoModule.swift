@@ -44,6 +44,10 @@ public final class VideoModule: Module {
         #endif
       }
 
+      Prop("watermarkText") { (view, value: String?) in
+        view.watermarkText = value
+      }
+
       Prop("contentFit") { (view, contentFit: VideoContentFit?) in
         view.playerViewController.videoGravity = contentFit?.toVideoGravity() ?? .resizeAspect
       }

@@ -121,7 +121,7 @@ class VideoModule : Module() {
             ref.currentLiveTimestamp
           }
         }
-
+      
       Property("availableVideoTracks")
         .get { ref: VideoPlayer ->
           ref.availableVideoTracks
@@ -283,6 +283,9 @@ class VideoModule : Module() {
           }
         }
 
+      Prop("watermarkText") { view: T, watermarkText: String? ->   // ← ADD THIS LINE
+        view.watermarkText = watermarkText
+      }
       Function("replace") { ref: VideoPlayer, source: Either<Uri, VideoSource>? ->
         replaceImpl(ref, source)
       }
