@@ -162,7 +162,5 @@ export interface VideoViewProps extends ViewProps {
      * @default undefined
      */
     crossOrigin?: "anonymous" | "use-credentials";
-
-    /*Custom Added For Watermark*/
     watermarkText?: string;
 }
