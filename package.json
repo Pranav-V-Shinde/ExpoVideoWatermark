@@ -1,21 +1,15 @@
 {
-    "name": "@pranavvshinde/expo-video",
+    "name": "@pranavvivekshinde0007/expo-video-watermark",
     "title": "Expo Video",
-    "version": "2.1.9-pranav.0",
+    "version": "2.1.9",
     "description": "A custom fork of Expo Video with watermark support (original: A cross-platform, performant video component for React Native and Expo with Web support)",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "sideEffects": false,
-    "scripts": {
-        "build": "expo-module build",
-        "clean": "expo-module clean",
-        "lint": "expo-module lint",
-        "test": "expo-module test",
-        "prepare": "expo-module prepare",
-        "prepublishOnly": "expo-module prepublishOnly",
-        "expo-module": "expo-module"
-    },
     "homepage": "https://docs.expo.dev/versions/latest/sdk/video/",
+    "publishConfig": {
+        "access": "public"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/Pranav-V-Shinde/ExpoVideoWatermark",
